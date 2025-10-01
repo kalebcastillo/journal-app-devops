@@ -57,24 +57,22 @@ pipeline {
   }
 
   post {
-    success {
-      echo "✅ Pushed ${IMAGE}:${GIT_SHA_SHORT} and ${IMAGE}:latest"
-      withCredentials([string(credentialsId: 'discord-webhook', variable: 'WEBHOOK')]) {
-        sh '''
-          curl -s -X POST -H "Content-Type: application/json" \
-            -d "{\"content\": \"✅ ${JOB_NAME} #${BUILD_NUMBER} succeeded on ${BRANCH_NAME}\\nImage: ${IMAGE}:${GIT_SHA_SHORT}\"}" \
-            "$WEBHOOK"
-        '''
+  success {
+    withCredentials([string(credentialsId: 'discord-webhook', variable: 'WEBHOOK')]) {
+      sh '''
+        curl -sS -X POST -H "Content-Type: application/json" \
+          -d "{\"content\":\"✅ ${JOB_NAME} #${BUILD_NUMBER} succeeded on ${BRANCH_NAME}\\nImage: ${IMAGE}:${GIT_SHA_SHORT}\"}" \
+          "$WEBHOOK"
+      '''
       }
     }
-    failure {
-      echo "❌ Build failed — check the console log."
-      withCredentials([string(credentialsId: 'discord-webhook', variable: 'WEBHOOK')]) {
-        sh '''
-          curl -s -X POST -H "Content-Type: application/json" \
-            -d "{\"content\": \"❌ ${JOB_NAME} #${BUILD_NUMBER} failed on ${BRANCH_NAME}\\nLogs: ${BUILD_URL}\"}" \
-            "$WEBHOOK"
-        '''
+  failure {
+    withCredentials([string(credentialsId: 'discord-webhook', variable: 'WEBHOOK')]) {
+      sh '''
+        curl -sS -X POST -H "Content-Type: application/json" \
+          -d "{\"content\":\"❌ ${JOB_NAME} #${BUILD_NUMBER} failed on ${BRANCH_NAME}\\nLogs: ${BUILD_URL}\"}" \
+          "$WEBHOOK"
+      '''
       }
     }
   }
