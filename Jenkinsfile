@@ -32,28 +32,18 @@ pipeline {
             }
         }
         
-          stage('Build image') {
+        stage('Build & Push') {
             steps {
                 script {
-                    def img = docker.build("${IMAGE}:${GIT_SHA_SHORT}", ".")
-                    sh "docker tag ${IMAGE}:${GIT_SHA_SHORT} ${IMAGE}:latest"
+                docker.withServer('tcp://127.0.0.1:2375') {
+                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
+          def img = docker.build("kalebcastillo/myapijenkins:${env.GIT_SHA_SHORT}", ".")
+          img.push()          // pushes :<sha>
+          img.push('latest')  // pushes :latest
+                  }
                 }
-            }
-        }
-
-        stage('Push Docker image') {
-            steps {
-                script {
-                    // Use Jenkins Docker Pipeline integration to login with your credentials
-                    docker.withRegistry("https://${REGISTRY}", 'dockerhub-creds') {
-                        sh """
-                          # Push both tags to Docker Hub
-                          docker push ${IMAGE}:${GIT_SHA_SHORT}
-                          docker push ${IMAGE}:latest
-                        """
-                    }
-                }
-            }
+              }
+           }
         }
     
         stage('Deliver') {
