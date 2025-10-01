@@ -1,6 +1,6 @@
 services:
   myapi:
-    image: kalebcastillo/myapi:latest
+    image: kalebcastillo/myapijenkins:latest
     ports:
       - "8000:8000"
     env_file: ["./.env"]
