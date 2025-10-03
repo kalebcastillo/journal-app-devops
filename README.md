@@ -2,6 +2,9 @@
 
 This project aims to implement DevOps methodologies towards an existing two tier journal application. This is still in progress as there are more functionalities I intend to add.
 
+Check out my LinkedIn blog here about how this project is going so far:
+[Blog Post](https://www.linkedin.com/pulse/containers-jenkins-kaleb-castillo-ekkie?utm_source=share&utm_medium=member_ios&utm_campaign=share_via)
+
 ## In Progress
 - Tests for the applicaton code.
 - The actual CD portion of CI/CD. Deploying the app and database as part of my Jenkins pipeline.
